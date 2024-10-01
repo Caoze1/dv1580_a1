@@ -53,26 +53,26 @@ void mem_free(void* block){
 
 void* mem_resize(void* block, size_t size){
     if (block == NULL){
-        return mem_alloc(size);
+        return mem_alloc(size); // if no memory block, allocate new memory
     };
 
     struct memory_block* current_block = (struct memory_block*)((char*)block - sizeof(struct memory_block)); // ptr to memory_block struct
 
     if (current_block->size >= size){
-        return block;
+        return block; // if current block is big enough, keep it
     };
 
-    void* new_ptr = mem_alloc(size);
+    void* new_ptr = mem_alloc(size); // allocate new block with new size
     if (new_ptr != NULL){
-        memcpy(new_ptr, block, current_block->size);
-        mem_free(block);
+        memcpy(new_ptr, block, current_block->size); // copy old block stats onto new one
+        mem_free(block); // free old block
     }
 
     return new_ptr;
 };
 
 
-void mem_deinit(){
+void mem_deinit(){ // free pool and maker pointers NULL
     free(memory_pool);
     memory_pool = NULL;
     block_list = NULL;
