@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-// declare function
+// declare functions
 void mem_init(size_t size);
 void* mem_alloc(size_t size);
 void mem_free(void* block);
