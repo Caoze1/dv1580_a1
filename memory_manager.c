@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "memory_manager.h"
 
 
 struct memory_block{
@@ -8,8 +8,10 @@ struct memory_block{
     struct memory_block* next; // point to next block
 };
 
+
 static char* memory_pool = NULL; // will point to memory_pool later
 static struct memory_block* block_list = NULL; // will point to
+
 
 void mem_init(size_t size){
     memory_pool = (char*)malloc(size); // allocate memory pool

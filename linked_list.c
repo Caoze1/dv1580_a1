@@ -65,11 +65,10 @@ void list_delete(Node** head, int data){
       if (prev_node != NULL){
         prev_node->next = current->next;
       }
-
       mem_free(current);
+      return;
     }
-    
-    Node* prev_node = current;
+    prev_node = current;
     current = current->next;
   }
 };
@@ -93,8 +92,7 @@ void list_display_range(Node** head, Node* start_node, Node* end_node){
   if (start_node == NULL){
     start_node = *head;
   }
-  
-  Node* current = start_node;
+
   printf("[");
   while (start_node->next != end_node){ // if end_node is NULL it will still just go to the last one
     printf("%d", start_node->data);
@@ -125,7 +123,7 @@ int list_count_nodes(Node** head){
 void list_cleanup(Node** head){
   Node* current = *head;
   Node* next;
-  
+
   while (current != NULL){
     next = current->next;
     mem_free(current);
