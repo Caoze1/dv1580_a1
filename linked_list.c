@@ -80,14 +80,14 @@ void list_delete(Node** head, int data){
 Node* list_search(Node** head, int data){
   Node* current = *head;
 
-  while (current->data != data){
-    if (current == NULL){
-      printf("data not in list");
-      return 0;
+  while (current != NULL){
+    if (current->data == data){
+      return current;
     }
     current = current->next;
   }
-  return current;
+  printf("data not in list");
+  return 0;
 };
 
 
