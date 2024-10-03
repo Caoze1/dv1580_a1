@@ -15,7 +15,7 @@ static struct memory_block* first_block = NULL; // will point to
 
 
 
-struct memory_block* make_block(void* ptr, size_t size, int free, struct memory_block* next){
+struct memory_block* make_block(void* ptr, size_t size, int free, struct memory_block* next){ // makes a new block and room for its header
     struct memory_block* new_block = (struct memory_block*)malloc(sizeof(struct memory_block));
     *new_block = (struct memory_block){ptr, size, free, next};
 
@@ -34,12 +34,10 @@ void* mem_alloc(size_t size) {
     struct memory_block* current = first_block;
     // printf("new alloc\n");
     // printf("%zu\n", size);
-    // Traverse through the list to find a suitable free block
     while (current != NULL) {
         // // printf("%zu\n", current->size);
         if (current->free && current->size >= size) {
             
-            // Allocate the block by marking it as not free
             current->free = 0;
             
             struct memory_block* new_block = make_block((char*)current->ptr + size, current->size - size, 1, current->next);
@@ -59,9 +57,24 @@ void* mem_alloc(size_t size) {
 
 
 void mem_free(void* block){
-    struct memory_block* current = block;
-    current->free = 1;
-    free(current);
+    if (block == NULL){
+        return;
+    };
+
+    struct memory_block* current = first_block;
+    
+    while (current != NULL){
+        if (current->ptr == block){
+            if (current->next != NULL && current->next->free == 1){
+                struct memory_block* next = current->next;
+                current->next = next->next;
+                current->size += next->size;
+            }
+            current->free = 1;
+            return;
+        }
+        current = current->next;
+    }
 };
 
 
