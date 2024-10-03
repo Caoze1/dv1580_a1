@@ -56,7 +56,7 @@ void list_insert_before(Node** head, Node* next_node, int data){
 };
 
 
-void list_delete(Node** head, int data){
+void list_delete(Node** head, int data){ 
   Node* current = *head;
   Node* prev_node = NULL;
 
@@ -64,6 +64,9 @@ void list_delete(Node** head, int data){
     if (current->data == data){
       if (prev_node != NULL){
         prev_node->next = current->next;
+      }
+      if (current == *head){
+        *head = current->next;
       }
       mem_free(current);
       return;
