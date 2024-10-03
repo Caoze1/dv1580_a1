@@ -2,6 +2,7 @@
 
 
 struct memory_block{
+    void* ptr;
     size_t size;
     int free;
 
@@ -10,46 +11,57 @@ struct memory_block{
 
 
 static char* memory_pool = NULL; // will point to memory_pool later
-static struct memory_block* block_list = NULL; // will point to
+static struct memory_block* first_block = NULL; // will point to
+
+
+
+struct memory_block* make_block(void* ptr, size_t size, int free, struct memory_block* next){
+    struct memory_block* new_block = (struct memory_block*)malloc(sizeof(struct memory_block));
+    *new_block = (struct memory_block){ptr, size, free, next};
+
+    return new_block;
+};
 
 
 void mem_init(size_t size){
-    memory_pool = (char*)malloc(size); // allocate memory pool
+    memory_pool = malloc(size); // allocate memory pool
 
-    block_list = (struct memory_block*)memory_pool; // point to beginning of memory pool, making one big memory block
-    block_list->size = size - (sizeof(struct memory_block)); // set block size
-    block_list->free = 1; // mark the block as free
-    block_list->next = NULL; // next = NULL because there is no other block to point to yet
+    first_block = make_block(memory_pool, size, 1, NULL); // make header for first block pointing to the pool
 };
 
 
-void* mem_alloc(size_t size){
-    struct memory_block* current = block_list; // 
-    
-    while (current != NULL){
-        if (current->free && current->size >= size + sizeof(struct memory_block)){ // if current block is free and big enough
-            char* new_block_address = (char*)current + (sizeof(struct memory_block)); // calculate where the next free block should start
-            struct memory_block* new_block = (struct block*)new_block_address; // point to new memory_block at end of last one
-
-            new_block->size = current->size - size - sizeof(struct memory_block); // update new block stats
-            new_block->free = 1;
-            new_block->next = current->next;
-
-            current->size = size; // update current block stats
+void* mem_alloc(size_t size) {
+    struct memory_block* current = first_block;
+    // printf("new alloc\n");
+    // printf("%zu\n", size);
+    // Traverse through the list to find a suitable free block
+    while (current != NULL) {
+        // // printf("%zu\n", current->size);
+        if (current->free && current->size >= size) {
+            
+            // Allocate the block by marking it as not free
             current->free = 0;
+            
+            struct memory_block* new_block = make_block((char*)current->ptr + size, current->size - size, 1, current->next);
+            
+            current->size = size;
             current->next = new_block;
-
-            return (void*)(current + 1); // returns address of current block + size of 1 memory_block struct
+            // // printf("success!\n");
+            return current->ptr; // Return pointer to the data part
+        
         }
-        current = current->next; // moves the current pointer to the address of the next memory_block
+        current = current->next;
     }
-};
+    // // printf("fail\n");
+    return NULL;
+}
+
 
 
 void mem_free(void* block){
-
-    struct memory_block* current_block = (struct memory_block*)((char*)block - sizeof(struct memory_block)); // ptr to memory_block struct
-    current_block->free = 1;
+    struct memory_block* current = block;
+    current->free = 1;
+    free(current);
 };
 
 
@@ -77,10 +89,14 @@ void* mem_resize(void* block, size_t size){
 void mem_deinit(){ // free pool and maker pointers NULL
     free(memory_pool);
     memory_pool = NULL;
-    block_list = NULL;
+    first_block = NULL;
 }
 
 
 int main(){
-    mem_init(1024); // initialize 1 kb
+    // mem_init(1024); // initialize 1 kb
+    // void *block1 = mem_alloc(512);
+    
+    // void *block2 = mem_alloc(512);
+    
 };
