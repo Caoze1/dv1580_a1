@@ -92,17 +92,26 @@ Node* list_search(Node** head, int data){
 
 
 void list_display_range(Node** head, Node* start_node, Node* end_node){
+  if (head == NULL){
+    return;
+  }
   if (start_node == NULL){
     start_node = *head;
   }
-
+  
   printf("[");
-  while (start_node->next != end_node){ // if end_node is NULL it will still just go to the last one
+  while (start_node != end_node){
     printf("%d", start_node->data);
+    if (start_node->next == NULL){
+      break;
+    }
     printf(", ");
     start_node = start_node->next;
   }
-  printf("%d", start_node->data);
+
+  if (start_node == end_node){
+    printf("%d", end_node->data);
+  }
   printf("]");
 };
 
