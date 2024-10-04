@@ -98,7 +98,7 @@ void list_display_range(Node** head, Node* start_node, Node* end_node){
   if (start_node == NULL){
     start_node = *head;
   }
-  
+
   printf("[");
   while (start_node != end_node){
     printf("%d", start_node->data);
@@ -133,6 +133,9 @@ int list_count_nodes(Node** head){
 
 
 void list_cleanup(Node** head){
+  if (head == NULL){
+    return;
+  }
   Node* current = *head;
   Node* next;
 
@@ -141,5 +144,6 @@ void list_cleanup(Node** head){
     mem_free(current);
     current = next;
   }
+  *head = NULL;
   
 };
