@@ -2,7 +2,6 @@
 #define LINKED_LIST_H
 
 #include <stdint.h>
-#include <stdlib.h>
 #include "memory_manager.h"
 
 typedef struct Node {

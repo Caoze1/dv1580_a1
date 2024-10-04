@@ -1,22 +1,43 @@
 #include "linked_list.h"
 
 
+/**
+ * Initializes a linked list by setting up a memory pool and the head node.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ * @param size The size of the memory pool to initialize.
+ *
+ * Behavior:
+ * - Initializes a memory pool of the given size using `mem_init`.
+ * - Sets the head pointer of the linked list to `NULL`, indicating an empty list.
+ */
 void list_init(Node** head, size_t size){
-  mem_init(size); // initialize memory pool of size size
-  *head = NULL; // sets pointer to pointer to head to null
+  mem_init(size);
+  *head = NULL;
 };
 
 
+/**
+ * Inserts a new node with the specified data at the end of the linked list.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ * @param data The integer data to store in the new node.
+ *
+ * Behavior:
+ * - Allocates memory for a new node using `mem_alloc`.
+ * - If the list is empty, the new node becomes the head.
+ * - Otherwise, the new node is added to the end of the list.
+ */
 void list_insert(Node** head, int data){
   Node* node = (Node*) mem_alloc(sizeof(Node));
  
   node->data = data;
   node->next = NULL;
 
-  if (*head == NULL){ // if the list is empty set this as the first node
+  if (*head == NULL){
     *head = node;
   }
-  else{ // if the list is not empty put the node last
+  else{
     Node* current = *head;
     while (current->next != NULL) {
       current = current->next;
@@ -26,17 +47,46 @@ void list_insert(Node** head, int data){
 };
 
 
+/**
+ * Inserts a new node with the specified data after the given node.
+ *
+ * @param prev_node The node after which the new node will be inserted.
+ * @param data The integer data to store in the new node.
+ *
+ * Behavior:
+ * - Allocates memory for a new node.
+ * - Inserts the new node immediately after the given `prev_node`.
+ * - If `prev_node` is `NULL`, the function does nothing.
+ */
 void list_insert_after(Node* prev_node, int data){
+  if (prev_node == NULL){
+    return;
+  }
   Node* node = (Node*) mem_alloc(sizeof(Node));
   node->data = data;
   
-  node->next = prev_node->next; // give the prev_node-> next to this node and then put this node as prev_node-> next
+  node->next = prev_node->next;
   prev_node->next = node;
 
 };
 
 
+/**
+ * Inserts a new node with the specified data before the given node.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ * @param next_node The node before which the new node will be inserted.
+ * @param data The integer data to store in the new node.
+ *
+ * Behavior:
+ * - Allocates memory for a new node.
+ * - If the list is empty or the next_node is the head, the new node becomes the new head.
+ * - Otherwise, the new node is inserted before the given `next_node`.
+ */
 void list_insert_before(Node** head, Node* next_node, int data){
+  if (head == NULL){
+    return;
+  }
   Node* node = (Node*) mem_alloc(sizeof(Node));
   node->data = data;
 
@@ -56,7 +106,22 @@ void list_insert_before(Node** head, Node* next_node, int data){
 };
 
 
-void list_delete(Node** head, int data){ 
+
+/**
+ * Deletes the first node with the specified data from the linked list.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ * @param data The data of the node to delete.
+ *
+ * Behavior:
+ * - Searches for the node with the specified data and removes it from the list.
+ * - Frees the memory associated with the node.
+ * - If the node is not found, the function does nothing.
+ */
+void list_delete(Node** head, int data){
+  if (head == NULL){
+    return;
+  }
   Node* current = *head;
   Node* prev_node = NULL;
 
@@ -77,7 +142,21 @@ void list_delete(Node** head, int data){
 };
 
 
+/**
+ * Searches for a node with the specified data in the linked list.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ * @param data The data to search for in the list.
+ * @return Pointer to the node containing the data, or `NULL` if not found.
+ *
+ * Behavior:
+ * - Traverses the linked list to find the first node that contains the given data.
+ * - If the node is found, it is returned; otherwise, the function returns `NULL`.
+ */
 Node* list_search(Node** head, int data){
+  if (head == NULL){
+    return;
+  }
   Node* current = *head;
 
   while (current != NULL){
@@ -91,6 +170,17 @@ Node* list_search(Node** head, int data){
 };
 
 
+/**
+ * Displays the data of nodes between the specified start and end nodes, inclusive.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ * @param start_node The node from which to start displaying.
+ * @param end_node The node at which to stop displaying.
+ *
+ * Behavior:
+ * - Prints the data of each node starting from `start_node` to `end_node`.
+ * - If `start_node` is `NULL`, the function starts from the head of the list.
+ */
 void list_display_range(Node** head, Node* start_node, Node* end_node){
   if (head == NULL){
     return;
@@ -116,12 +206,32 @@ void list_display_range(Node** head, Node* start_node, Node* end_node){
 };
 
 
+/**
+ * Displays the entire linked list by printing the data of all nodes.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ *
+ * Behavior:
+ * - Calls `list_display_range` to display all nodes in the list.
+ */
 void list_display(Node** head){
   list_display_range(head, NULL, NULL);
 };
 
 
+/**
+ * Counts the number of nodes in the linked list.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ * @return The number of nodes in the list.
+ *
+ * Behavior:
+ * - Traverses the linked list and counts the nodes.
+ */
 int list_count_nodes(Node** head){
+  if (head == NULL){
+    return;
+  }
   Node* current = *head;
   int i = 0;
   while (current != NULL){
@@ -132,6 +242,15 @@ int list_count_nodes(Node** head){
 };
 
 
+/**
+ * Frees all nodes in the linked list and cleans up memory.
+ *
+ * @param head Pointer to a pointer to the head node of the linked list.
+ *
+ * Behavior:
+ * - Traverses the list and frees each node using `mem_free`.
+ * - Sets the head pointer to `NULL` after the cleanup is complete.
+ */
 void list_cleanup(Node** head){
   if (head == NULL){
     return;
