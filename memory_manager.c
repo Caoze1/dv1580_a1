@@ -147,10 +147,10 @@ void* mem_resize(void* block, size_t size){
         return block;
     };
 
-    void* new_ptr = mem_alloc(size); // allocate new block with new size
+    void* new_ptr = mem_alloc(size); // Allocate new block with new size
     if (new_ptr != NULL){
-        memcpy(new_ptr, block, current_block->size); // copy old block stats onto new one
-        mem_free(block); // free old block
+        memcpy(new_ptr, block, current_block->size); // Copy old block stats onto new one
+        mem_free(block); // Free old block
     }
 
     return new_ptr;
