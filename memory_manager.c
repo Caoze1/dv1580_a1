@@ -90,7 +90,7 @@ void* mem_alloc(size_t size) {
         current = current->next;
     }
     return NULL;
-}
+};
 
 
 /**
@@ -141,15 +141,23 @@ void* mem_resize(void* block, size_t size){
         return mem_alloc(size);
     };
 
-    struct memory_block* current_block = (struct memory_block*)((char*)block - sizeof(struct memory_block));
+    struct memory_block* current_block = first_block;
+
+    while (current_block != NULL){
+        if (current_block->ptr == block){
+            break;
+        }
+        current_block = current_block->next;
+    }
 
     if (current_block->size >= size){
         return block;
     };
 
-    void* new_ptr = mem_alloc(size); // Allocate new block with new size
+    char* new_ptr = mem_alloc(size); // Allocate new block with new size
+
     if (new_ptr != NULL){
-        memcpy(new_ptr, block, current_block->size); // Copy old block stats onto new one
+        memcpy(new_ptr, block, current_block->size); 
         mem_free(block); // Free old block
     }
 
